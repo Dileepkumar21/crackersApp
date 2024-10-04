@@ -1,8 +1,6 @@
 package com.pos.crackers.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.pos.crackers.model.Crackers;
-import com.pos.crackers.model.Customer;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 

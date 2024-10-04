@@ -5,7 +5,6 @@ import com.pos.crackers.exception.BusinessException;
 import com.pos.crackers.model.Crackers;
 import com.pos.crackers.model.Customer;
 import com.pos.crackers.model.Sale;
-import com.pos.crackers.repo.CrackersRepository;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;

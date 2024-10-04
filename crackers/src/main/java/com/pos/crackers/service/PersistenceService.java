@@ -1,6 +1,5 @@
 package com.pos.crackers.service;
 
-import com.pos.crackers.entities.CustomerInfo;
 import com.pos.crackers.model.Crackers;
 import com.pos.crackers.model.Customer;
 import com.pos.crackers.model.Sale;

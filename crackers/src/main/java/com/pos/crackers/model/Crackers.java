@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pos.crackers.enums.PriceTypeEnum;
 import com.pos.crackers.model.converter.PriceTypeEnumConverter;
 import jakarta.persistence.*;
-import org.hibernate.annotations.Fetch;
 
 import java.util.ArrayList;
 import java.util.List;

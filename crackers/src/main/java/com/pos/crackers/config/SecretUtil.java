@@ -1,8 +1,5 @@
 package com.pos.crackers.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
-
 import java.util.HashMap;
 
 public interface SecretUtil {

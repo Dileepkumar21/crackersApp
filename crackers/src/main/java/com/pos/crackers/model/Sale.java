@@ -1,12 +1,9 @@
 package com.pos.crackers.model;
 
-import com.pos.crackers.entities.CrackerItem;
 import com.pos.crackers.entities.SaleResponse;
 import com.pos.crackers.model.converter.SaleResponseJsonConverter;
 import jakarta.persistence.*;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.ColumnTransformer;
-import org.hibernate.annotations.Fetch;
 
 import java.util.ArrayList;
 import java.util.List;
