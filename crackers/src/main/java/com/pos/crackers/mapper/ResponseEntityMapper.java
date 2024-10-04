@@ -4,12 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pos.crackers.entities.*;
 import com.pos.crackers.model.Crackers;
+import com.pos.crackers.model.Customer;
 import com.pos.crackers.model.Sale;
 import org.apache.commons.lang3.tuple.Pair;
 import org.hibernate.boot.archive.scan.internal.ScanResultImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -64,12 +66,17 @@ public class ResponseEntityMapper {
         return response;
     }
 
-    public void totalSalesMapper(List<Sale> totalSaleList){
+    public TotalSalesResponse totalSalesMapper(List<Sale> totalSaleList){
         TotalSalesResponse totalSalesResponse = new TotalSalesResponse();
+        List<SaleItem> saleItemList = new ArrayList<>();
+        totalSaleList = totalSaleList.stream().sorted( (o1, o2) -> o2.getCreateTs().compareTo(o1.getCreateTs())).toList();
         for(Sale sale : totalSaleList){
-            //totalSalesResponse.setCrackers(sale.getCrackers());
-            totalSalesResponse.setCustomer(sale.getCustomer());
-            totalSalesResponse.setSellValue(sale.getSellValue());
+            Customer customer = sale.getCustomer();
+            SaleItem saleItem = new SaleItem(new CustomerInfo(customer.getCustName(), customer.getMobileNum()), sale.getSaleResponse());
+            saleItemList.add(saleItem);
         }
+        totalSalesResponse.setSaleItemList(saleItemList);
+        totalSalesResponse.setTotalSaleValue(totalSaleList.stream().mapToInt(item -> item.getSellValue()).sum());
+        return totalSalesResponse;
     }
 }

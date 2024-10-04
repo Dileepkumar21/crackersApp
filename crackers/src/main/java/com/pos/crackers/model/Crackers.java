@@ -13,6 +13,7 @@ import java.util.List;
 @Table(name = "CRACKERS",schema = "POS_DATA")
 public class Crackers extends AuditBaseEntity{
 
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CRACKER_ID")

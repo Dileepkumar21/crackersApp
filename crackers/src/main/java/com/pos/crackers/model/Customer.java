@@ -1,5 +1,6 @@
 package com.pos.crackers.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class Customer extends AuditBaseEntity{
     @Column(name = "MOBILE_NUM")
     private String mobileNum;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "customer")
     private List<Sale> sales;
 

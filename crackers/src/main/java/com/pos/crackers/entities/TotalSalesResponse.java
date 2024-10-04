@@ -12,28 +12,27 @@ import java.util.List;
 @Component
 public class TotalSalesResponse {
 
-    @JsonProperty
-    private Customer customer;
+    @JsonProperty("sales")
+    private List<SaleItem> saleItemList;
 
     @JsonProperty
-    private List<CrackerCost> crackers;
+    private Integer totalSaleValue;
 
-    @JsonProperty
-    private Integer SellValue;
-
-    public Customer getCustomer() {
-        return customer;
+    public Integer getTotalSaleValue() {
+        return totalSaleValue;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setTotalSaleValue(Integer sellValue) {
+        totalSaleValue = sellValue;
     }
 
-    public Integer getSellValue() {
-        return SellValue;
+    public List<SaleItem> getSaleItemList() {
+        return saleItemList;
     }
 
-    public void setSellValue(Integer sellValue) {
-        SellValue = sellValue;
+    public void setSaleItemList(List<SaleItem> saleItemList) {
+        this.saleItemList = saleItemList;
     }
+
+
 }

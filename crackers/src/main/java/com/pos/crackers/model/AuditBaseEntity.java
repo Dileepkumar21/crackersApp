@@ -1,5 +1,6 @@
 package com.pos.crackers.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
@@ -10,9 +11,11 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public abstract class AuditBaseEntity {
 
+    @JsonIgnore
     @Column(name = "create_ts", updatable = false)
     private LocalDateTime createTs;
 
+    @JsonIgnore
     @Column(name = "update_ts")
     private LocalDateTime updateTs;
 

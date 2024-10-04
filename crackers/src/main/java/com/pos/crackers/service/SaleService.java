@@ -43,7 +43,8 @@ public class SaleService {
                 Crackers cracker = optionalCrackerName.get();
                 Integer qtyOrdered = crackerItem.getQuantity();
                 if(qtyOrdered > cracker.getQuantityAvailable())
-                    throw new BusinessException("Quantity available is less than the ordered quantity for "+ crackerItem.getCrackerName());
+                    throw new BusinessException(String.format("Quantity available is less than the ordered " +
+                            "quantity for %s. Available quantity %d ", crackerItem.getCrackerName(), cracker.getQuantityAvailable()));
                 Integer crackerCost = qtyOrdered * cracker.getItemPrice();
                 totalCost += crackerCost;
                 updateCrackerTable(crackerItem, cracker, crackerCost, sale);
@@ -59,9 +60,9 @@ public class SaleService {
         return Pair.of(crackerCostList, totalCost);
     }
 
-    public void retrieveAllSaleDetails(){
+    public List<Sale> retrieveAllSaleDetails(){
         List<Sale> saleList = persistenceService.getAllSaleDetails();
-
+        return saleList;
     }
 
     private static void updateSaleTable(Sale sale, Crackers cracker, Integer totalCost, List<CrackerCost> crackerCostList) {

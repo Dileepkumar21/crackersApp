@@ -6,6 +6,7 @@ import com.pos.crackers.entities.*;
 import com.pos.crackers.exception.BusinessException;
 import com.pos.crackers.mapper.ResponseEntityMapper;
 import com.pos.crackers.model.Crackers;
+import com.pos.crackers.model.Sale;
 import com.pos.crackers.service.PersistenceService;
 import com.pos.crackers.service.SaleService;
 import com.pos.crackers.validation.RequestValidator;
@@ -66,12 +67,17 @@ public class CrackersSaleAPI {
         String response = null;
         ResponseEntity responseEntity = null;
         try {
-
+            List<Sale> sales = saleService.retrieveAllSaleDetails();
+            TotalSalesResponse totalSalesResponse = responseEntityMapper.totalSalesMapper(sales);
+            response = objectMapper.writeValueAsString(totalSalesResponse);
         }catch (BusinessException exp) {
             response = responseEntityMapper.mapErrorResponse(400 ,exp.getMessage());
             responseEntity = new ResponseEntity(response, HttpStatusCode.valueOf(400));
+        }catch (Exception exp){
+            response = responseEntityMapper.mapErrorResponse(500, exp.getMessage());
+            responseEntity = new ResponseEntity(response, HttpStatusCode.valueOf(500));
         }
-        return null;
+        return new ResponseEntity(response, HttpStatusCode.valueOf(200));
     }
 
 }
