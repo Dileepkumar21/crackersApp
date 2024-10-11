@@ -23,20 +23,56 @@ public class SaleService {
     @Autowired
     TotalSalesResponse totalSalesResponse;
 
+//    @Transactional
+//    public Pair<List<CrackerCost>, Integer> performSale(SaleRequest saleRequest){
+//        List<CrackerItem> crackerItemList = saleRequest.getCrackerCostList();
+//        List<CrackerCost> crackerCostList = new ArrayList<>();
+//        CustomerInfo customerInfo = saleRequest.getCustomerInfo();
+//        Customer customer = persistenceService.getCustomer(customerInfo.getName(), customerInfo.getPhoneNumber());
+//        Integer totalCost = 0;
+//        if(customer==null){
+//            customer = persistenceService.saveCustomer(new Customer(customerInfo.getName(), customerInfo.getPhoneNumber()));
+//        }
+//        Sale sale = new Sale();
+//        sale.setCustomer(customer);
+//
+//        for(CrackerItem crackerItem: crackerItemList){
+//            Optional<Crackers> optionalCrackerName = persistenceService.getCrackerByName(crackerItem.getCrackerName());
+//            if(optionalCrackerName.isPresent()){
+//                Crackers cracker = optionalCrackerName.get();
+//                Integer qtyOrdered = crackerItem.getQuantity();
+//                if(qtyOrdered > cracker.getQuantityAvailable())
+//                    throw new BusinessException(String.format("Quantity available is less than the ordered " +
+//                            "quantity for %s. Available quantity %d ", crackerItem.getCrackerName(), cracker.getQuantityAvailable()));
+//                Integer crackerCost = qtyOrdered * cracker.getItemPrice();
+//                totalCost += crackerCost;
+//                updateCrackerTable(crackerItem, cracker, crackerCost, sale);
+//                updateSaleTable(sale, cracker, totalCost, crackerCostList);
+//                crackerCostList.add(new CrackerCost(crackerItem, crackerCost));
+//                persistenceService.saveSale(sale);
+//            }
+//            else{
+//                throw new BusinessException("Cracker not found");
+//            }
+//        }
+//
+//        return Pair.of(crackerCostList, totalCost);
+//    }
+
     @Transactional
     public Pair<List<CrackerCost>, Integer> performSale(SaleRequest saleRequest){
-        List<CrackerItem> crackerItemList = saleRequest.getCrackerItemList();
+        List<CrackerCost> crackerItemList = saleRequest.getCrackerCostList();
         List<CrackerCost> crackerCostList = new ArrayList<>();
         CustomerInfo customerInfo = saleRequest.getCustomerInfo();
         Customer customer = persistenceService.getCustomer(customerInfo.getName(), customerInfo.getPhoneNumber());
-        Integer totalCost = 0;
+
         if(customer==null){
             customer = persistenceService.saveCustomer(new Customer(customerInfo.getName(), customerInfo.getPhoneNumber()));
         }
         Sale sale = new Sale();
         sale.setCustomer(customer);
-
-        for(CrackerItem crackerItem: crackerItemList){
+        for(CrackerCost crackerCostItem: crackerItemList){
+            CrackerItem crackerItem = crackerCostItem.getCrackerItem();
             Optional<Crackers> optionalCrackerName = persistenceService.getCrackerByName(crackerItem.getCrackerName());
             if(optionalCrackerName.isPresent()){
                 Crackers cracker = optionalCrackerName.get();
@@ -44,11 +80,9 @@ public class SaleService {
                 if(qtyOrdered > cracker.getQuantityAvailable())
                     throw new BusinessException(String.format("Quantity available is less than the ordered " +
                             "quantity for %s. Available quantity %d ", crackerItem.getCrackerName(), cracker.getQuantityAvailable()));
-                Integer crackerCost = qtyOrdered * cracker.getItemPrice();
-                totalCost += crackerCost;
-                updateCrackerTable(crackerItem, cracker, crackerCost, sale);
-                updateSaleTable(sale, cracker, totalCost, crackerCostList);
-                crackerCostList.add(new CrackerCost(crackerItem, crackerCost));
+                updateCrackerTable(crackerItem, cracker, crackerCostItem.getCost(), sale);
+                updateSaleTable(sale, cracker, saleRequest.getTotalCost(), crackerCostList);
+                crackerCostList.add(crackerCostItem);
                 persistenceService.saveSale(sale);
             }
             else{
@@ -56,7 +90,7 @@ public class SaleService {
             }
         }
 
-        return Pair.of(crackerCostList, totalCost);
+        return Pair.of(crackerCostList, saleRequest.getTotalCost());
     }
 
     public List<Sale> retrieveAllSaleDetails(){

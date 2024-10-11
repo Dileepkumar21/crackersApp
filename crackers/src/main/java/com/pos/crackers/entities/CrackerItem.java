@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 @ToString
 public class CrackerItem {
 
-    @JsonProperty(value = "CrackerName")
+    @JsonProperty(value = "crackerName")
     private String crackerName;
 
-    @JsonProperty(value = "Quantity")
+    @JsonProperty(value = "quantity")
     private Integer quantity;
 
     public String getCrackerName() {

@@ -48,23 +48,23 @@ public class CrackersSaleAPI {
         return new ResponseEntity(applicationResponse, HttpStatusCode.valueOf(200));
     }
 
-    @PostMapping(path = "/performsale", produces = "application/json")
-    public ResponseEntity<String> performSale(@RequestBody SaleRequest saleRequest) throws JsonProcessingException {
-
-        String response = null;
-        ResponseEntity responseEntity = null;
-        try {
-            requestValidator.validateSaleRequest(saleRequest);
-            Pair<List<CrackerCost>, Integer> performSaleResponse = saleService.performSale(saleRequest);
-            String applicationResponse = responseEntityMapper.mapSaleResponse(performSaleResponse);
-            return new ResponseEntity(applicationResponse, HttpStatusCode.valueOf(200));
-
-        } catch (BusinessException exp) {
-            response = responseEntityMapper.mapErrorResponse(400 ,exp.getMessage());
-            responseEntity = new ResponseEntity(response, HttpStatusCode.valueOf(400));
-        }
-        return responseEntity;
-    }
+//    @PostMapping(path = "/performsale", produces = "application/json")
+//    public ResponseEntity<String> performSale(@RequestBody SaleRequest saleRequest) throws JsonProcessingException {
+//
+//        String response = null;
+//        ResponseEntity responseEntity = null;
+//        try {
+//            requestValidator.validateSaleRequest(saleRequest);
+//            Pair<List<CrackerCost>, Integer> performSaleResponse = saleService.performSale(saleRequest);
+//            String applicationResponse = responseEntityMapper.mapSaleResponse(performSaleResponse);
+//            return new ResponseEntity(applicationResponse, HttpStatusCode.valueOf(200));
+//
+//        } catch (BusinessException exp) {
+//            response = responseEntityMapper.mapErrorResponse(400 ,exp.getMessage());
+//            responseEntity = new ResponseEntity(response, HttpStatusCode.valueOf(400));
+//        }
+//        return responseEntity;
+//    }
 
     @GetMapping(produces = "application/json", path = "/getSaleList")
     public ResponseEntity<String> getALlSaleDetails(){
@@ -82,6 +82,24 @@ public class CrackersSaleAPI {
             responseEntity = new ResponseEntity(response, HttpStatusCode.valueOf(500));
         }
         return new ResponseEntity(response, HttpStatusCode.valueOf(200));
+    }
+
+    @PostMapping(path = "/performsale", produces = "application/json")
+    public ResponseEntity<String> performSale(@RequestBody SaleRequest saleRequest) throws JsonProcessingException {
+
+        String response = null;
+        ResponseEntity responseEntity = null;
+        try {
+            requestValidator.validateSaleRequest(saleRequest);
+            Pair<List<CrackerCost>, Integer> performSaleResponse = saleService.performSale(saleRequest);
+            String applicationResponse = responseEntityMapper.mapSaleResponse(performSaleResponse);
+            return new ResponseEntity(applicationResponse, HttpStatusCode.valueOf(200));
+
+        } catch (BusinessException exp) {
+            response = responseEntityMapper.mapErrorResponse(400 ,exp.getMessage());
+            responseEntity = new ResponseEntity(response, HttpStatusCode.valueOf(400));
+        }
+        return responseEntity;
     }
 
 }

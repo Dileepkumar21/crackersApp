@@ -14,18 +14,21 @@ import java.util.List;
 @ToString
 public class SaleRequest {
 
-    @JsonProperty("CrackerItems")
-    private List<CrackerItem> crackerItemList;
+    @JsonProperty("crackerCostList")
+    private List<CrackerCost> crackerCostList;
 
-    @JsonProperty("CustomerInfo")
+    @JsonProperty("customerInfo")
     private CustomerInfo customerInfo;
 
-    public List<CrackerItem> getCrackerItemList() {
-        return crackerItemList;
+    @JsonProperty("totalCost")
+    private Integer totalCost;
+
+    public List<CrackerCost> getCrackerCostList() {
+        return crackerCostList;
     }
 
-    public void setCrackerItemList(List<CrackerItem> crackerItemList) {
-        this.crackerItemList = crackerItemList;
+    public void setCrackerCostList(List<CrackerCost> crackerCostList) {
+        this.crackerCostList = crackerCostList;
     }
 
     public CustomerInfo getCustomerInfo() {
@@ -36,8 +39,17 @@ public class SaleRequest {
         this.customerInfo = customerInfo;
     }
 
-    public SaleRequest(List<CrackerItem> crackerItemList, CustomerInfo customerInfo) {
-        this.crackerItemList = crackerItemList;
+    public Integer getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(Integer totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public SaleRequest(List<CrackerCost> crackerCostList, CustomerInfo customerInfo, Integer totalCost) {
+        this.crackerCostList = crackerCostList;
         this.customerInfo = customerInfo;
+        this.totalCost = totalCost;
     }
 }

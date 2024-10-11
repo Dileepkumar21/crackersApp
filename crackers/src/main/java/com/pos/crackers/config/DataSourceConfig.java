@@ -17,6 +17,7 @@ public class DataSourceConfig {
                 .driverClassName("org.postgresql.Driver")
                 .username("postgres")
                 .password("postgres")
+                //.password("jelly22fi$h")
                 .build();
     }
 }
