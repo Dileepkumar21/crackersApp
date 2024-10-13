@@ -10,9 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class SaleService {
@@ -71,6 +69,7 @@ public class SaleService {
         }
         Sale sale = new Sale();
         sale.setCustomer(customer);
+        Map<Crackers, CrackerCost> crackersItemMap = new HashMap<>();
         for(CrackerCost crackerCostItem: crackerItemList){
             CrackerItem crackerItem = crackerCostItem.getCrackerItem();
             Optional<Crackers> optionalCrackerName = persistenceService.getCrackerByName(crackerItem.getCrackerName());
@@ -80,16 +79,19 @@ public class SaleService {
                 if(qtyOrdered > cracker.getQuantityAvailable())
                     throw new BusinessException(String.format("Quantity available is less than the ordered " +
                             "quantity for %s. Available quantity %d ", crackerItem.getCrackerName(), cracker.getQuantityAvailable()));
-                updateCrackerTable(crackerItem, cracker, crackerCostItem.getCost(), sale);
-                updateSaleTable(sale, cracker, saleRequest.getTotalCost(), crackerCostList);
+                crackersItemMap.put(cracker, crackerCostItem);
                 crackerCostList.add(crackerCostItem);
-                persistenceService.saveSale(sale);
             }
             else{
                 throw new BusinessException("Cracker not found");
             }
         }
-
+        for(Map.Entry<Crackers, CrackerCost> item: crackersItemMap.entrySet()){
+            CrackerCost crackerCost = item.getValue();
+            updateCrackerTable(crackerCost.getCrackerItem(), item.getKey(), crackerCost.getCost(), sale);
+            updateSaleTable(sale, saleRequest.getTotalCost(), crackerCostList, item.getKey());
+        }
+        persistenceService.saveSale(sale);
         return Pair.of(crackerCostList, saleRequest.getTotalCost());
     }
 
@@ -98,12 +100,12 @@ public class SaleService {
         return saleList;
     }
 
-    private static void updateSaleTable(Sale sale, Crackers cracker, Integer totalCost, List<CrackerCost> crackerCostList) {
-        sale.addSoldCrackers(cracker);
+    private static void updateSaleTable(Sale sale, Integer totalCost, List<CrackerCost> crackerCostList, Crackers cracker) {
         sale.setSellValue(totalCost);
         SaleResponse saleResponse = new SaleResponse();
         saleResponse.setCrackerCostList(crackerCostList);
         sale.setSaleResponse(saleResponse);
+        sale.addSoldCrackers(cracker);
     }
 
     private static void updateCrackerTable(CrackerItem crackerItem, Crackers cracker, Integer crackerCost, Sale sale) {
