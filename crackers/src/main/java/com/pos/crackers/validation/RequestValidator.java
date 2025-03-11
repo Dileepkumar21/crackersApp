@@ -31,7 +31,7 @@ public class RequestValidator {
         ListObjectNotEmpty(crackerCostItemList);
         validateCustomerInfo(customerInfo);
         validateCrackerCostList(crackerCostItemList);
-        objectNotNull(saleRequest.getTotalCost());
+        objectNotNull(saleRequest.getActualCost());
 
     }
 

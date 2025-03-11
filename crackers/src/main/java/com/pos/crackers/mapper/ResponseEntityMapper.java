@@ -55,7 +55,7 @@ public class ResponseEntityMapper {
 
         SaleResponse saleResponse = new SaleResponse();
         saleResponse.setCrackerCostList(performSaleResponse.getLeft());
-        saleResponse.setTotalCost(performSaleResponse.getRight());
+        saleResponse.setSaleValue(performSaleResponse.getRight());
         String response = null;
         try {
             response = objectMapper.writeValueAsString(saleResponse);
@@ -75,7 +75,7 @@ public class ResponseEntityMapper {
             saleItemList.add(saleItem);
         }
         totalSalesResponse.setSaleItemList(saleItemList);
-        totalSalesResponse.setTotalSaleValue(totalSaleList.stream().mapToInt(item -> item.getSellValue()).sum());
+        totalSalesResponse.setTotalSaleValue(totalSaleList.stream().mapToInt(item -> item.getSaleValue()).sum());
         return totalSalesResponse;
     }
 }

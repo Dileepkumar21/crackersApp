@@ -2,13 +2,16 @@ package com.pos.crackers.apis;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pos.crackers.entities.BlogItemRequest;
 import com.pos.crackers.entities.CrackerCost;
 import com.pos.crackers.entities.SaleRequest;
 import com.pos.crackers.entities.TotalSalesResponse;
 import com.pos.crackers.exception.BusinessException;
 import com.pos.crackers.mapper.ResponseEntityMapper;
+import com.pos.crackers.model.BlogItem;
 import com.pos.crackers.model.Crackers;
 import com.pos.crackers.model.Sale;
+import com.pos.crackers.service.BlogService;
 import com.pos.crackers.service.PersistenceService;
 import com.pos.crackers.service.SaleService;
 import com.pos.crackers.validation.RequestValidator;
@@ -41,7 +44,20 @@ public class CrackersSaleAPI {
     @Autowired
     SaleService saleService;
 
-    @GetMapping(produces = "application/json", path = "/getCrackersList")
+    @Autowired
+    BlogService blogService;
+
+    @GetMapping(produces = "application/json", path = "/")
+    public ResponseEntity<String> check(){
+        return new ResponseEntity("OK",HttpStatusCode.valueOf(200));
+    }
+
+    @GetMapping(produces = "application/json", path = "/healthCheck")
+    public ResponseEntity<String> ping(){
+        return new ResponseEntity("OK",HttpStatusCode.valueOf(200));
+    }
+
+    @GetMapping(produces = "application/json", path = "/crackers-api/getCrackersList")
     public ResponseEntity<String> getCrackersList(){
         List<Crackers> crackers = persistenceService.fetchALlCrackers();
         String applicationResponse  = responseEntityMapper.mapCrackersResponse(crackers);
@@ -66,7 +82,7 @@ public class CrackersSaleAPI {
 //        return responseEntity;
 //    }
 
-    @GetMapping(produces = "application/json", path = "/getSaleList")
+    @GetMapping(produces = "application/json", path = "/crackers-api/getSaleList")
     public ResponseEntity<String> getALlSaleDetails(){
         String response = null;
         ResponseEntity responseEntity = null;
@@ -84,7 +100,7 @@ public class CrackersSaleAPI {
         return new ResponseEntity(response, HttpStatusCode.valueOf(200));
     }
 
-    @PostMapping(path = "/performsale", produces = "application/json")
+    @PostMapping(path = "/crackers-api/performsale", produces = "application/json")
     public ResponseEntity<String> performSale(@RequestBody SaleRequest saleRequest) throws JsonProcessingException {
 
         String response = null;
@@ -101,5 +117,38 @@ public class CrackersSaleAPI {
         }
         return responseEntity;
     }
+
+    @PostMapping(path = "/crackers-api/submitorder", produces = "application/json")
+    public ResponseEntity<String> submitOrder(@RequestBody SaleRequest saleRequest) throws JsonProcessingException {
+
+        String response = null;
+        ResponseEntity responseEntity = null;
+        String submitorder = null;
+        try {
+            submitorder = saleService.submitorder(saleRequest);
+        } catch (Exception exp) {
+
+        }
+
+        return new ResponseEntity(submitorder, HttpStatusCode.valueOf(200));
+    }
+
+    @PostMapping(path = "/Blog-api/addBlogItem", produces = "application/json")
+    public ResponseEntity<String> addBlogItem(@RequestBody BlogItemRequest blogItemRequest) throws JsonProcessingException {
+        try{
+        blogService.persistBlogItem(blogItemRequest);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return new ResponseEntity<>(HttpStatusCode.valueOf(200));
+    }
+
+    @GetMapping(path = "/Blog-api/get", produces = "application/json")
+    public ResponseEntity<String> getBlogList() throws JsonProcessingException {
+        String response = null;
+        response = objectMapper.writeValueAsString(blogService.getBlogList());
+        return new ResponseEntity<>(response, HttpStatusCode.valueOf(200));
+    }
+
 
 }

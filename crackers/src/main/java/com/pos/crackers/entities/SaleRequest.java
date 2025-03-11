@@ -1,5 +1,6 @@
 package com.pos.crackers.entities;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.stereotype.Component;
@@ -20,8 +21,13 @@ public class SaleRequest {
     @JsonProperty("customerInfo")
     private CustomerInfo customerInfo;
 
-    @JsonProperty("totalCost")
-    private Integer totalCost;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("actualCost")
+    private Integer actualCost;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("saleValue")
+    private Integer saleValue;
 
     public List<CrackerCost> getCrackerCostList() {
         return crackerCostList;
@@ -39,17 +45,26 @@ public class SaleRequest {
         this.customerInfo = customerInfo;
     }
 
-    public Integer getTotalCost() {
-        return totalCost;
+    public Integer getActualCost() {
+        return actualCost;
     }
 
-    public void setTotalCost(Integer totalCost) {
-        this.totalCost = totalCost;
+    public void setActualCost(Integer actualCost) {
+        this.actualCost = actualCost;
     }
 
-    public SaleRequest(List<CrackerCost> crackerCostList, CustomerInfo customerInfo, Integer totalCost) {
+    public Integer getSaleValue() {
+        return saleValue;
+    }
+
+    public void setSaleValue(Integer saleValue) {
+        this.saleValue = saleValue;
+    }
+
+    public SaleRequest(List<CrackerCost> crackerCostList, CustomerInfo customerInfo, Integer totalCost, Integer saleValue) {
         this.crackerCostList = crackerCostList;
         this.customerInfo = customerInfo;
-        this.totalCost = totalCost;
+        this.actualCost = totalCost;
+        this.saleValue = saleValue;
     }
 }

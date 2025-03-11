@@ -15,18 +15,30 @@ import java.util.List;
 @NoArgsConstructor
 public class SaleResponse {
 
-    @JsonProperty(value = "totalCost")
+    @JsonProperty(value = "saleValue")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer totalCost;
+    private Integer saleValue;
+
+    @JsonProperty(value = "actualCost")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer actualCost;
 
     private List<CrackerCost> crackerCostList;
 
-    public Integer getTotalCost() {
-        return totalCost;
+    public Integer getSaleValue() {
+        return saleValue;
     }
 
-    public void setTotalCost(Integer totalCost) {
-        this.totalCost = totalCost;
+    public void setSaleValue(Integer saleValue) {
+        this.saleValue = saleValue;
+    }
+
+    public Integer getActualCost() {
+        return actualCost;
+    }
+
+    public void setActualCost(Integer actualCost) {
+        this.actualCost = actualCost;
     }
 
     public List<CrackerCost> getCrackerCostList() {

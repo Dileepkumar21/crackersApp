@@ -1,10 +1,13 @@
 package com.pos.crackers.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pos.crackers.entities.*;
 import com.pos.crackers.exception.BusinessException;
 import com.pos.crackers.model.Crackers;
 import com.pos.crackers.model.Customer;
 import com.pos.crackers.model.Sale;
+import com.pos.crackers.service.util.SNSUtil;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,9 @@ public class SaleService {
 
     @Autowired
     TotalSalesResponse totalSalesResponse;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
 //    @Transactional
 //    public Pair<List<CrackerCost>, Integer> performSale(SaleRequest saleRequest){
@@ -80,6 +86,7 @@ public class SaleService {
                     throw new BusinessException(String.format("Quantity available is less than the ordered " +
                             "quantity for %s. Available quantity %d ", crackerItem.getCrackerName(), cracker.getQuantityAvailable()));
                 crackersItemMap.put(cracker, crackerCostItem);
+                crackerCostItem.setCost(crackerCostItem.getCost()*crackerCostItem.getCrackerItem().getQuantity());
                 crackerCostList.add(crackerCostItem);
             }
             else{
@@ -89,10 +96,11 @@ public class SaleService {
         for(Map.Entry<Crackers, CrackerCost> item: crackersItemMap.entrySet()){
             CrackerCost crackerCost = item.getValue();
             updateCrackerTable(crackerCost.getCrackerItem(), item.getKey(), crackerCost.getCost(), sale);
-            updateSaleTable(sale, saleRequest.getTotalCost(), crackerCostList, item.getKey());
+            updateSaleTable(sale, saleRequest.getActualCost(), saleRequest.getSaleValue(), crackerCostList, item.getKey());
         }
         persistenceService.saveSale(sale);
-        return Pair.of(crackerCostList, saleRequest.getTotalCost());
+        //here
+        return Pair.of(crackerCostList, saleRequest.getSaleValue());
     }
 
     public List<Sale> retrieveAllSaleDetails(){
@@ -100,8 +108,9 @@ public class SaleService {
         return saleList;
     }
 
-    private static void updateSaleTable(Sale sale, Integer totalCost, List<CrackerCost> crackerCostList, Crackers cracker) {
-        sale.setSellValue(totalCost);
+    private static void updateSaleTable(Sale sale, Integer actualCost, Integer saleValue, List<CrackerCost> crackerCostList, Crackers cracker) {
+        sale.setSaleValue(saleValue);
+        sale.setActualCost(actualCost);
         SaleResponse saleResponse = new SaleResponse();
         saleResponse.setCrackerCostList(crackerCostList);
         sale.setSaleResponse(saleResponse);
@@ -112,5 +121,9 @@ public class SaleService {
         cracker.setQuantityAvailable(cracker.getQuantityAvailable() - crackerItem.getQuantity());
         cracker.setStockPrice(cracker.getStockPrice() - crackerCost);
         cracker.addToSales(sale);
+    }
+
+    public String submitorder(SaleRequest saleRequest) throws JsonProcessingException {
+       return SNSUtil.publishMessage(objectMapper.writeValueAsString(saleRequest));
     }
 }

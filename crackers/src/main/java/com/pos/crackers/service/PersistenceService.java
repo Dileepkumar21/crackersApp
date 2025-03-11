@@ -1,8 +1,10 @@
 package com.pos.crackers.service;
 
+import com.pos.crackers.model.BlogItem;
 import com.pos.crackers.model.Crackers;
 import com.pos.crackers.model.Customer;
 import com.pos.crackers.model.Sale;
+import com.pos.crackers.repo.BlogRepository;
 import com.pos.crackers.repo.CrackersRepository;
 import com.pos.crackers.repo.CustomerRepository;
 import com.pos.crackers.repo.SaleRepository;
@@ -23,6 +25,9 @@ public class PersistenceService {
 
     @Autowired
     SaleRepository saleRepository;
+
+    @Autowired
+    BlogRepository blogRepository;
 
     public List<Crackers> fetchALlCrackers(){
         return crackersRepository.findAll();
@@ -51,5 +56,13 @@ public class PersistenceService {
 
     public List<Sale> getAllSaleDetails() {
         return saleRepository.findAll();
+    }
+
+    public BlogItem persistBlogItem(BlogItem blogItem){
+        return blogRepository.save(blogItem);
+    }
+
+    public List<BlogItem> getAllBLogs() {
+        return blogRepository.findAll();
     }
 }

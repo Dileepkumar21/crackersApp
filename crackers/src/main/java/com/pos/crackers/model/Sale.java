@@ -24,8 +24,11 @@ public class Sale extends AuditBaseEntity {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @Column(name = "SELL_VALUE")
-    private Integer sellValue;
+    @Column(name = "SALE_VALUE")
+    private Integer saleValue;
+
+    @Column(name = "ACTUAL_COST")
+    private Integer actualCost;
 
     //TODO - Add non null constraint on this in the database
     @Column(name = "sale_details", columnDefinition = "jsonb")
@@ -45,12 +48,12 @@ public class Sale extends AuditBaseEntity {
         this.customer = customer;
     }
 
-    public Integer getSellValue() {
-        return sellValue;
+    public Integer getSaleValue() {
+        return saleValue;
     }
 
-    public void setSellValue(Integer sellValue) {
-        this.sellValue = sellValue;
+    public void setSaleValue(Integer saleValue) {
+        this.saleValue = saleValue;
     }
 
     public void addSoldCrackers(Crackers crackers){
@@ -65,20 +68,30 @@ public class Sale extends AuditBaseEntity {
         this.saleResponse = saleResponse;
     }
 
+    public Integer getActualCost() {
+        return actualCost;
+    }
+
+    public void setActualCost(Integer actualCost) {
+        this.actualCost = actualCost;
+    }
+
     public Sale() {
         this.crackers = new ArrayList<>();
     }
 
-    public Sale(Customer customer, Integer sellValue) {
+    public Sale(Customer customer, Integer saleValue, Integer actualCost) {
         this.customer = customer;
-        this.sellValue = sellValue;
+        this.saleValue = saleValue;
+        this.actualCost = actualCost;
     }
 
     @Override
     public String toString() {
         return "Sale{" +
                 "customer=" + customer +
-                ", sellValue=" + sellValue +
+                ", saleValue=" + saleValue +
+                ", actualCost=" + actualCost +
                 '}';
     }
 }

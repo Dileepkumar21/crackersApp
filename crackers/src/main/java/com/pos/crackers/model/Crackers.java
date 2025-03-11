@@ -23,6 +23,9 @@ public class Crackers extends AuditBaseEntity{
     @Column(name = "QUANTITY_AVAILABLE")
     private Integer quantityAvailable;
 
+    @Column(name = "ORIGINAL_QUANTITY")
+    private Integer originalQuantity;
+
     @Column(name = "ITEM_PRICE")
     private Integer itemPrice;
 
@@ -44,6 +47,9 @@ public class Crackers extends AuditBaseEntity{
             inverseJoinColumns = @JoinColumn(name = "SALE_ID")
     )
     private List<Sale> sales = new ArrayList<>();
+
+    @Column(name = "url")
+    private String url;
 
     public Long getId() {
         return id;
@@ -99,6 +105,14 @@ public class Crackers extends AuditBaseEntity{
 
     public void addToSales(Sale sale) {
         this.sales.add(sale);
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public Crackers() {
