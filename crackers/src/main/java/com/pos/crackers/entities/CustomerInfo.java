@@ -20,6 +20,9 @@ public class CustomerInfo {
     @JsonProperty("phoneNumber")
     private String phoneNumber;
 
+    @JsonProperty("address")
+    private String address;
+
     public String getName() {
         return name;
     }
@@ -36,8 +39,17 @@ public class CustomerInfo {
         this.phoneNumber = phoneNumber;
     }
 
-    public CustomerInfo(String name, String phoneNumber) {
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public CustomerInfo(String name, String phoneNumber, String address) {
         this.name = name;
         this.phoneNumber = phoneNumber;
+        this.address = address;
     }
 }

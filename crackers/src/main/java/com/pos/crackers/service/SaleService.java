@@ -8,6 +8,7 @@ import com.pos.crackers.model.Crackers;
 import com.pos.crackers.model.Customer;
 import com.pos.crackers.model.Sale;
 import com.pos.crackers.service.util.SNSUtil;
+import com.pos.crackers.service.util.Util;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class SaleService {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    @Autowired
+    Util utils;
 
 //    @Transactional
 //    public Pair<List<CrackerCost>, Integer> performSale(SaleRequest saleRequest){
@@ -68,11 +72,7 @@ public class SaleService {
         List<CrackerCost> crackerItemList = saleRequest.getCrackerCostList();
         List<CrackerCost> crackerCostList = new ArrayList<>();
         CustomerInfo customerInfo = saleRequest.getCustomerInfo();
-        Customer customer = persistenceService.getCustomer(customerInfo.getName(), customerInfo.getPhoneNumber());
-
-        if(customer==null){
-            customer = persistenceService.saveCustomer(new Customer(customerInfo.getName(), customerInfo.getPhoneNumber()));
-        }
+        Customer customer = utils.getCustomer(customerInfo);
         Sale sale = new Sale();
         sale.setCustomer(customer);
         Map<Crackers, CrackerCost> crackersItemMap = new HashMap<>();
@@ -103,6 +103,7 @@ public class SaleService {
         return Pair.of(crackerCostList, saleRequest.getSaleValue());
     }
 
+
     public List<Sale> retrieveAllSaleDetails(){
         List<Sale> saleList = persistenceService.getAllSaleDetails();
         return saleList;
@@ -121,9 +122,5 @@ public class SaleService {
         cracker.setQuantityAvailable(cracker.getQuantityAvailable() - crackerItem.getQuantity());
         cracker.setStockPrice(cracker.getStockPrice() - crackerCost);
         cracker.addToSales(sale);
-    }
-
-    public String submitorder(SaleRequest saleRequest) throws JsonProcessingException {
-       return SNSUtil.publishMessage(objectMapper.writeValueAsString(saleRequest));
     }
 }

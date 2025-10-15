@@ -7,7 +7,8 @@ import java.util.Map;
 public enum PriceTypeEnum {
 
     SINGLE("SINGLE"),
-    PACK("PACK");
+    PACK("PACK"),
+    BOX("BOX");
 
     private final String code;
 

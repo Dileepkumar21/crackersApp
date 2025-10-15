@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pos.crackers.entities.*;
 import com.pos.crackers.model.Crackers;
 import com.pos.crackers.model.Customer;
+import com.pos.crackers.model.Order;
 import com.pos.crackers.model.Sale;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,11 +72,22 @@ public class ResponseEntityMapper {
         totalSaleList = totalSaleList.stream().sorted( (o1, o2) -> o2.getCreateTs().compareTo(o1.getCreateTs())).toList();
         for(Sale sale : totalSaleList){
             Customer customer = sale.getCustomer();
-            SaleItem saleItem = new SaleItem(new CustomerInfo(customer.getCustName(), customer.getMobileNum()), sale.getSaleResponse());
+            SaleItem saleItem = new SaleItem(new CustomerInfo(customer.getCustName(), customer.getMobileNum(), customer.getAddress()), sale.getSaleResponse());
             saleItemList.add(saleItem);
         }
         totalSalesResponse.setSaleItemList(saleItemList);
         totalSalesResponse.setTotalSaleValue(totalSaleList.stream().mapToInt(item -> item.getSaleValue()).sum());
         return totalSalesResponse;
     }
+
+    public String mapOrderResponse(List<Order> orders) throws JsonProcessingException{
+
+        OrderResponse orderResponse = new OrderResponse(new ArrayList<>());
+        for(Order order: orders) {
+            orderResponse.addToOrders(order);
+        }
+
+        return objectMapper.writeValueAsString(orderResponse);
+    }
+
 }

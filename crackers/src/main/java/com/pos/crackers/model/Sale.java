@@ -1,5 +1,6 @@
 package com.pos.crackers.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pos.crackers.entities.SaleResponse;
 import com.pos.crackers.model.converter.SaleResponseJsonConverter;
 import jakarta.persistence.*;
@@ -23,6 +24,10 @@ public class Sale extends AuditBaseEntity {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "sale")
+    private Order order;
 
     @Column(name = "SALE_VALUE")
     private Integer saleValue;

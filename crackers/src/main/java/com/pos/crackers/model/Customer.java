@@ -12,6 +12,7 @@ public class Customer extends AuditBaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CUSTOMER_ID")
+    @JsonIgnore
     Long id;
 
     @Column(name = "CUST_NAME")
@@ -20,9 +21,16 @@ public class Customer extends AuditBaseEntity{
     @Column(name = "MOBILE_NUM")
     private String mobileNum;
 
+    @Column(name = "ADDRESS")
+    private String address;
+
     @JsonIgnore
     @OneToMany(mappedBy = "customer")
     private List<Sale> sales;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "customer")
+    private List<Order> orders;
 
     public Long getId() {
         return id;
@@ -54,6 +62,14 @@ public class Customer extends AuditBaseEntity{
 
     public void addToSales(Sale sale) {
         this.sales.add(sale);
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public Customer(){

@@ -6,6 +6,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * This entity is used as a DTO to transfer entire sale list
+ * to the caller
+ */
 @NoArgsConstructor
 @Component
 public class TotalSalesResponse {

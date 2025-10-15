@@ -10,8 +10,10 @@ import com.pos.crackers.exception.BusinessException;
 import com.pos.crackers.mapper.ResponseEntityMapper;
 
 import com.pos.crackers.model.Crackers;
+import com.pos.crackers.model.Order;
 import com.pos.crackers.model.Sale;
 
+import com.pos.crackers.service.OrderService;
 import com.pos.crackers.service.PersistenceService;
 import com.pos.crackers.service.SaleService;
 import com.pos.crackers.validation.RequestValidator;
@@ -43,6 +45,9 @@ public class CrackersSaleAPI {
 
     @Autowired
     SaleService saleService;
+
+    @Autowired
+    OrderService orderService;
 
     @GetMapping(produces = "application/json", path = "/")
     public ResponseEntity<String> check(){
@@ -115,19 +120,32 @@ public class CrackersSaleAPI {
         return responseEntity;
     }
 
-    @PostMapping(path = "/crackers-api/submitorder", produces = "application/json")
+    @PostMapping(path = "/crackers-api/order", produces = "application/json")
     public ResponseEntity<String> submitOrder(@RequestBody SaleRequest saleRequest) throws JsonProcessingException {
 
         String response = null;
         ResponseEntity responseEntity = null;
         String submitorder = null;
         try {
-            submitorder = saleService.submitorder(saleRequest);
+            orderService.submitOrder(saleRequest);
         } catch (Exception exp) {
 
+            response = responseEntityMapper.mapErrorResponse(500 ,exp.getMessage());
+            responseEntity = new ResponseEntity(response, HttpStatusCode.valueOf(500));
         }
 
         return new ResponseEntity(submitorder, HttpStatusCode.valueOf(200));
+    }
+
+    @GetMapping(path = "/crackers-api/orders", produces = "application/json")
+    public ResponseEntity<String> getOrders() throws JsonProcessingException{
+
+        String response = null;
+        ResponseEntity responseEntity = null;
+
+        List<Order> orders = orderService.getAllOrders();
+        String orderResponse = responseEntityMapper.mapOrderResponse(orders);
+        return new ResponseEntity(orderResponse, HttpStatusCode.valueOf(200));
     }
 
 }
