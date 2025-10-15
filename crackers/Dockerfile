@@ -5,7 +5,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy the jar file to the container
-COPY crackers-app.jar /app/crackers-app.jar
+COPY crackers-0.0.1-SNAPSHOT.jar /app/crackers-0.0.1-SNAPSHOT.jar
 
 # Define the command to run the jar file
 ENTRYPOINT ["java", "-jar", "/app/crackers-app.jar"]
