@@ -81,6 +81,12 @@ public class Customer extends AuditBaseEntity{
         this.mobileNum = mobileNum;
     }
 
+    public Customer(String custName, String mobileNum, String address) {
+        this.custName = custName;
+        this.mobileNum = mobileNum;
+        this.address = address;
+    }
+
     @Override
     public String toString() {
         return "Customer{" +

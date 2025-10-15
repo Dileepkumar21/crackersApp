@@ -33,6 +33,7 @@ public class OrderService {
         order.setOrderPack(saleRequest);
         order.setCustomer(customer);
         order.setFulfilled(false);
+
         orderRepository.save(order);
     }
 

@@ -16,7 +16,7 @@ public class Util {
         Customer customer = persistenceService.getCustomer(customerInfo.getName(), customerInfo.getPhoneNumber());
 
         if(customer==null){
-            customer = persistenceService.saveCustomer(new Customer(customerInfo.getName(), customerInfo.getPhoneNumber()));
+            customer = persistenceService.saveCustomer(new Customer(customerInfo.getName(), customerInfo.getPhoneNumber(), customerInfo.getAddress()));
         }
         return customer;
     }
