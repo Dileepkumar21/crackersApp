@@ -1,11 +1,23 @@
-# Use an official OpenJDK runtime as a parent image
-FROM openjdk:17-jdk-slim
+# ---------- build stage ----------
+FROM maven:3.9.5-eclipse-temurin-17 AS build
+WORKDIR /workspace
 
-# Set the working directory inside the container
+# copy only what is needed to build (helps cache)
+COPY pom.xml .
+COPY src ./src
+
+# Build the app (skip tests to speed up)
+RUN mvn -B -DskipTests package
+
+# ---------- runtime stage ----------
+FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 
-# Copy the jar file to the container
-COPY crackers-0.0.1-SNAPSHOT.jar /app/crackers-0.0.1-SNAPSHOT.jar
+# copy jar from build stage (wildcard is safer)
+COPY --from=build /workspace/target/*.jar app.jar
 
-# Define the command to run the jar file
-ENTRYPOINT ["java", "-jar", "/app/crackers-app.jar"]
+# JVM options tuned for tiny hosts (512MB). Adjust as needed.
+ENV JAVA_OPTS="-Xms64m -Xmx256m -XX:MaxRAMPercentage=70.0 -Djava.security.egd=file:/dev/./urandom"
+
+EXPOSE 8080
+ENTRYPOINT ["sh","-c","exec java $JAVA_OPTS -jar /app/app.jar"]
